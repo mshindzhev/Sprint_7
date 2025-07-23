@@ -12,16 +12,27 @@ class CourierMethods:
     @allure.step('Создаем курьера')
     def create_courier(self, params=None):
         if params is None:
-            params = self.generate_payload_for_create_courier(10, 10)
-        response = requests.post(f'{data.BASE_URL}/api/v1{data.COURIER}', data=params)
+            params = self.generate_payload_for_create_courier()
+        response = requests.post(f'{data.BASE_URL}/api/v1{data.COURIER_URL}', data=params)
         return response.status_code, response.text, response.json()
 
 
-    @allure.step('Генерируем данные курьера')
-    def generate_payload_for_create_courier(self, symbol_login, symbol_password):
+    @allure.step('Логин курьера')
+    def login_courier(self):
+        response = requests.post(f'{data.BASE_URL}/api/v1{data.COURIER_URL}/login', data=data.DATA_COURIER)
+        return response.status_code, response.json()
 
-        login = self.generate_random_string(symbol_login)
-        password = self.generate_random_string(symbol_password)
+
+    @allure.step('Удаление курьера')
+    def delete_courier(self, id_courier):
+        requests.delete(f'{data.BASE_URL}/api/v1{data.COURIER_URL}/{id_courier}')
+
+
+    @allure.step('Генерируем данные курьера')
+    def generate_payload_for_create_courier(self):
+
+        login = self.generate_random_string(10)
+        password = self.generate_random_string(10)
         first_name = self.generate_random_string(10)
 
         payload = {
