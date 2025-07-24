@@ -1,39 +1,41 @@
-import random
-import string
-
 import allure
 import requests
 
 import data
+import helpers
 
 
 class CourierMethods:
 
+    @staticmethod
     @allure.step('Создаем курьера')
-    def create_courier(self, params=None):
+    def create_courier(params=None):
         if params is None:
-            params = self.generate_payload_for_create_courier()
+            params = CourierMethods.generate_payload_for_create_courier()
         response = requests.post(f'{data.BASE_URL}/api/v1{data.COURIER_URL}', data=params)
         return response.status_code, response.text, response.json()
 
 
+    @staticmethod
     @allure.step('Логин курьера')
-    def login_courier(self):
+    def login_courier():
         response = requests.post(f'{data.BASE_URL}/api/v1{data.COURIER_URL}/login', data=data.DATA_COURIER)
         return response.status_code, response.json()
 
 
+    @staticmethod
     @allure.step('Удаление курьера')
-    def delete_courier(self, id_courier):
+    def delete_courier(id_courier):
         requests.delete(f'{data.BASE_URL}/api/v1{data.COURIER_URL}/{id_courier}')
 
 
+    @staticmethod
     @allure.step('Генерируем данные курьера')
-    def generate_payload_for_create_courier(self):
+    def generate_payload_for_create_courier():
 
-        login = self.generate_random_string(10)
-        password = self.generate_random_string(10)
-        first_name = self.generate_random_string(10)
+        login = helpers.generate_random_string(10)
+        password = helpers.generate_random_string(10)
+        first_name = helpers.generate_random_string(10)
 
         payload = {
             "login": login,
@@ -44,11 +46,6 @@ class CourierMethods:
         return payload
 
 
-    @staticmethod
-    @allure.step('Генерируем строку для данных курьера')
-    def generate_random_string(length):
-        letters = string.ascii_lowercase
-        random_string = ''.join(random.choice(letters) for i in range(length))
-        return random_string
+
 
 
